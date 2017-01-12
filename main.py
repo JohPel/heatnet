@@ -23,7 +23,8 @@ a = np.array([[-1,1,0,0,0,0,0,0,0,0],
 
 b = np.array([10,10,20,10,20,20,20,10])
 q = np.array([10,10,20,10,20,20,20,10])
-
+print("again")
 print("hello")
+print()
 x = np.linalg.solve(a,b)
 print(x)

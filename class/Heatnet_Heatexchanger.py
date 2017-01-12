@@ -81,7 +81,7 @@ class Heatnet_Heatexchanger():
 
     def supplyFlow_setPath(self, i, knotNumbers):
         self.__supplyFlow_path.append([i, knotNumbers])
-    def supplyFlow_getPath(self, i):
+    def supplyFlow_getPath(self, i=slice(None,None)):
         return self.__supplyFlow_path[i][1]
     def returnFlow_setPath(self,i,knotNumbers):
         self.__returnFlow_path.append([i,knotNumbers])

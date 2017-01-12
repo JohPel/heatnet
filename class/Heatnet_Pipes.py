@@ -90,5 +90,5 @@ class Heatnet_Pipes():
         print('********i: '+str(i)+' pipeIndex: ' +str(pipeIndex)+' heatFlow: '+str(heatFlow))
         self.__heatflow[i][pipeIndex]+=heatFlow
 
-    def getHeatflow(self,i,pipeIndex):
+    def getHeatflow(self,i,pipeIndex=slice(None,None)):
         return self.__heatflow[i][pipeIndex]

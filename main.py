@@ -16,7 +16,11 @@ from DataIO import DataIO
 from Heatnet_Pipes import Heatnet_Pipes
 from Heatnet_Heatexchanger import Heatnet_Heatexchanger
 from Heatnet_Consumptionprofiles import Heatnet_Consumptionprofiles
-from test import test
+import json
+from shapely.geometry import mapping, shape
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 metaData=DataIO(os.getcwd()+os.sep+'meta',os.getcwd()+os.sep+'meta')
 
@@ -31,7 +35,6 @@ for item in enumerate(HeatExchanger.index()):
 
         supplyFlow=[]
         returnFlow=[]
-
         index=0
         while index <= len(Pipes.index()):
             for pipe_end_point, pipe_start_point, pipe_index in zip(Pipes.end_point(), Pipes.start_point(), Pipes.index()):
@@ -63,6 +66,7 @@ startTime=time.clock()
 start=0
 End=Heatnet_Consumptionprofiles()
 #while Start < len(End.date()):
+print(HeatExchanger.heat_consumptionProfiles())
 while start < 10:
     print('###############Date: ' +End.date(start).strftime('%d.%m.%y %H:%M'))
 #    print('###############Time: ' +str(start))
@@ -70,14 +74,47 @@ while start < 10:
         for pipeNumber in HeatExchanger.supplyFlow_getPath(index):
             print('HeatConsumption: ' +str(HeatExchanger.heat_consumption(heatExchangerProfile,start)))
             Pipes.setHeatflow(start,pipeNumber,HeatExchanger.heat_consumption(heatExchangerProfile,start))
-            print('SUMMEHeatConsumption: '+'time: ' +str(start)+' pipeNumber: '+str(pipeNumber)+' HeatFlow: ' +str(Pipes.getHeatflow(start,pipeNumber)))
+            print('SUMMEHeatConsumption:  pipeNumber: '+str(pipeNumber)+' HeatFlow: ' +str(Pipes.getHeatflow(start,pipeNumber)))
 
 
 
     start=start+1
-
+print(HeatExchanger.supplyFlow_getPath())
 endTime=time.clock()
 
 print(endTime-startTime)
+print(Pipes.end_x(1))
+s = shape(json.loads('{"type": "Point", "coordinates": [0.0, 0.0]}'))
+
+print(s)
+
+print(Pipes.start_x())
+print(Pipes.start_y())
+fig = plt.figure()
+plt.xlim(-1,6)
+plt.ylim(-1, 6)
+ax = fig.add_subplot(1,1,1)
+
+
+def animate(i):
+     i=0
+     while i < 2:
+          
+          for index, start_point, start_x, start_y, end_point, end_x, end_y, heatFlow in zip(Pipes.index(), Pipes.start_point(), Pipes.start_x(), Pipes.start_y(), Pipes.end_point(), Pipes.end_x(), Pipes.end_y(), Pipes.getHeatflow(5)):
+             
+               print('index %s start_point %s start_x %s start_y %s \n --> \t end_point %s end_x %s end_y %s' %(index, start_point, start_x, start_y, end_point, end_x, end_y))
+               
+               if heatFlow > 400:
+                    color = 'r'
+               elif heatFlow < 400 and heatFlow > 200:
+                    color = 'g'
+               elif heatFlow < 200:
+                    color = 'b'
+               ax.clear()
+               ax.plot([start_x, end_x], [start_y, end_y],'go-', color=color)
+                  
+     i = i +1
+ani = animation.FuncAnimation(fig, animate, interval=1)
+plt.show()
 
 
